@@ -21,9 +21,31 @@ namespace BulkyBook.Controllers
         public IActionResult Index()
         {
             IndexPageModel ipm = new IndexPageModel();
-            ipm.Book = _db.Books.FromSqlRaw("Select * From Books order by noofdownloads desc").ToList();
+            ipm.AllBook = _db.Books.FromSqlRaw("Select * From Books order by noofdownloads desc").ToList();
             string sql = "Select * from carts where UserModel = " + Uid;
             ipm.Cart = _db.Carts.FromSqlRaw(sql).ToList();
+            List<int> c = new List<int>
+            {
+                -1
+            };
+            ipm.SearchBook = c;
+            return View(ipm);
+        }
+
+        [HttpPost]
+        public IActionResult Index(string q)
+        {
+            IndexPageModel ipm = new IndexPageModel();
+            ipm.Cart = _db.Carts.Where(d => d.User.Id == Uid).ToList();
+            string sql = "Select * from books where category like '%" + q + "%' or title like '%" + q + "%' or author like '%" + q + "%' order by noofdownloads desc";
+            List<BookModel> b = _db.Books.FromSqlRaw(sql).ToList();
+            List<int> c = new List<int>();
+            for(int i = 0; i < b.Count; i++)
+            {
+                c.Add(b[i].Id);
+            }
+            ipm.SearchBook = c;
+            ipm.AllBook = _db.Books.FromSqlRaw("Select * From Books order by noofdownloads desc").ToList();
             return View(ipm);
         }
 
@@ -108,15 +130,7 @@ namespace BulkyBook.Controllers
         }
 
 
-        [HttpPost]
-        public IActionResult Index(string q)
-        {
-            IndexPageModel ipm = new IndexPageModel();
-            ipm.Cart = _db.Carts.Where(d => d.User.Id == Uid).ToList();
-            string sql = "Select * from books where category like '%" + q + "%' or title like '%" + q + "%' or author like '%" + q + "%' order by noofdownloads desc";
-            ipm.Book = _db.Books.FromSqlRaw(sql).ToList();
-            return View(ipm);
-        }
+        
 
         public IActionResult Buy(int id)
         {

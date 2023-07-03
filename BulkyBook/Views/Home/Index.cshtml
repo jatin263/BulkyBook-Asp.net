@@ -8,33 +8,42 @@
     <input type="text" name="q" />
     <input type="submit" value="Search"/>
 }
-
 @{
     List<int> cBook = new List<int>();
-    <h1>Cart</h1>
+}
+@{
     if (Model.Cart.Count > 0)
     {
-        <table>
-            @for(int i = 0; i < Model.Cart.Count; i++)
-            {
-                cBook.Add(Model.Cart[i].Book.Id);
-                <tr>
-                    <td>@Model.Cart[i].Book.Title</td>
-                    <td>@Model.Cart[i].Quantity</td>
-                </tr>
-            }
+        int co = 1;
+        <h3 style="text-align:center">Books</h3>
+        <table width="100%">
+        <tr>
+            <td>S.No</td>
+            <td>Title</td>
+            <td>Author</td>
+            <td>Category</td>
+            <td>Quantity</td>
+        </tr>
+        @for(int i = 0; i < Model.Cart.Count; i++)
+        {
+            cBook.Add(Model.Cart[i].Book.Id);
+            <tr>
+                <td>@co</td>
+                <td>@Model.Cart[i].Book.Title</td>
+                <td>@Model.Cart[i].Book.Author</td>
+                <td>@Model.Cart[i].Book.Category</td>
+                <td>@Model.Cart[i].Quantity</td>
+            </tr>
+            co++;
+        }
         </table>
     }
     else
     {
-        <h4>Cart is Empty</h4>
+        <h3>Your Cart is Empty</h3>
     }
-}
-
-
-
-@{
-    if (Model.Book.Count > 0)
+    <h1>Books</h1>
+    if (Model.SearchBook[0] == -1)
     {
         int co = 1;
         <h3 style="text-align:center">Books</h3>
@@ -48,31 +57,71 @@
             <td>Buy Now</td>
             <td>Add to Cart</td>
         </tr>
-        @for(var i = 0; i < Model.Book.Count; i++)
-        {
-            <tr>
-                <td>@co</td>
-                <td>@Model.Book[i].Title</td>
-                <td>@Model.Book[i].Author</td>
-                <td>@Model.Book[i].Category</td>
-                <td>@Model.Book[i].NoOfDownloads</td>
-                <td>@Html.ActionLink("Buy","Buy","Home",new {id=Model.Book[i].Id})</td>
-                    @if (cBook.Contains(Model.Book[i].Id))
-                    {
-                        <td>Added To Cart</td>
+            @for(int i = 0; i < Model.AllBook.Count; i++)
+            {
+                <tr>
+                    <td>@co</td>
+                    <td>@Model.AllBook[i].Title</td>
+                    <td>@Model.AllBook[i].Author</td>
+                    <td>@Model.AllBook[i].Category</td>
+                    <td>@Model.AllBook[i].NoOfDownloads</td>
+                    <td>@Html.ActionLink("Buy","Buy","Home",new{id=Model.AllBook[i].Id})</td>
+                    @{
+                        if (cBook.Contains(Model.AllBook[i].Id))
+                        {
+                            <td>Added To Cart</td>
+                        }
+                        else
+                        {
+                            <td>@Html.ActionLink("Add To Cart","AddCart","Home",new{id=Model.AllBook[i].Id})</td>
+                        }
                     }
-                    else
-                    {
-                        <td>@Html.ActionLink("Add To Cart","AddCart","Home",new {id=Model.Book[i].Id})</td>
-                    }
-                    
-            </tr>
-            co++;
-        }
+                </tr>
+                co++;
+            }
         </table>
+
     }
     else
     {
-        <h3 style="text-align:center">No Result Found</h3>
+        int co = 1;
+        <h3 style="text-align:center">Books</h3>
+        <table width="100%">
+            <tr>
+                <td>S.No</td>
+                <td>Title</td>
+                <td>Author</td>
+                <td>Category</td>
+                <td>No of Downloads</td>
+                <td>Buy Now</td>
+                <td>Add to Cart</td>
+            </tr>
+            @for (int i = 0; i < Model.AllBook.Count; i++)
+            {
+                if (Model.SearchBook.Contains(Model.AllBook[i].Id))
+                {
+                    <tr>
+                        <td>@co</td>
+                        <td>@Model.AllBook[i].Title</td>
+                        <td>@Model.AllBook[i].Author</td>
+                        <td>@Model.AllBook[i].Category</td>
+                        <td>@Model.AllBook[i].NoOfDownloads</td>
+                        <td>@Html.ActionLink("Buy","Buy","Home",new{id=Model.AllBook[i].Id})</td>
+                        @{
+                            if (cBook.Contains(Model.AllBook[i].Id))
+                            {
+                                <td>Added To Cart</td>
+                            }
+                            else
+                            {
+                                <td>@Html.ActionLink("Add To Cart","AddCart","Home",new{id=Model.AllBook[i].Id})</td>
+                            }
+                        }
+                    </tr>
+                    co++;
+                }
+            }
+        </table>
+        
     }
 }
