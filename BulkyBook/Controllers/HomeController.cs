@@ -2,24 +2,31 @@
 using BulkyBook.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Web;
 using Microsoft.EntityFrameworkCore;
+using RestSharp;
 
 namespace BulkyBook.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly IHttpContextAccessor _contextAccessor;
         public static int Uid = 0;
-        private readonly ILogger<HomeController> _logger;
+        private static int BookIdf = 0;
         private readonly ApplicationDbContext _db;
 
-        public HomeController(ILogger<HomeController> logger, ApplicationDbContext db)
+        public HomeController( ApplicationDbContext db, IHttpContextAccessor contextAccessor)
         {
             _db = db;
-            _logger = logger;
+            _contextAccessor = contextAccessor;
         }
 
         public IActionResult Index()
         {
+            if (TempData.ContainsKey("msg"))
+            {
+                ViewBag.msg = TempData["msg"].ToString();
+            }
             IndexPageModel ipm = new IndexPageModel();
             ipm.AllBook = _db.Books.FromSqlRaw("Select * From Books order by noofdownloads desc").ToList();
             string sql = "Select * from carts where UserModel = " + Uid;
@@ -53,6 +60,100 @@ namespace BulkyBook.Controllers
         {
             return View();
         }
+        public IActionResult OrderNow(int id)
+        {
+            if (Uid == 0)
+            {
+                return RedirectToAction("Login");
+            }
+            BookIdf = id;
+            OrderPageModel opm = new OrderPageModel();
+            opm.Books=_db.Books.FromSqlRaw("Select * from Books where id="+id).ToList();
+            opm.Carts = null;
+            return View(opm);
+        }
+
+        public IActionResult Order()
+        {
+            if (Uid == 0)
+            {
+                return RedirectToAction("Login");
+            }
+            BookIdf = 0;
+            OrderPageModel opm = new OrderPageModel();
+            opm.Books=_db.Books.FromSqlRaw("Select * from Books").ToList() ;
+            opm.Carts=_db.Carts.FromSqlRaw("Select * from Carts where UserModel="+Uid).ToList();
+            return View(opm);
+        }
+        [HttpPost]
+        public IActionResult SetOrder(int[] qunatityOfBook,string UserAddress,string UserPostalCode,string UserState,string UserCity)
+        {
+            if (Uid == 0)
+            {
+                return RedirectToAction("Login");
+            }
+            if (BookIdf != 0)
+            {
+                OrderModel om = new OrderModel();
+                BookModel bm = _db.Books.Find(BookIdf);
+                int priceOfBook = bm.Price;
+                om.Price = priceOfBook * qunatityOfBook[0];
+                om.Quantity = qunatityOfBook[0];
+                om.User = _db.Users.Find(Uid);
+                om.Book = bm;
+                if (UserAddress != null)
+                {
+                    om.Address = UserAddress;
+                    om.City = UserCity;
+                    om.State=UserState;
+                    om.PostalCode=UserPostalCode;
+                }
+                else
+                {
+                    om.Address = om.User.Address;
+                    om.City= om.User.City;
+                    om.State = om.User.State;
+                    om.PostalCode = om.User.PostalCode;
+                }
+                om.OrderStatus = 1;
+                _db.Orders.Add(om);
+                _db.SaveChanges();
+            }
+            else
+            {
+                List<BookModel> bmo = _db.Books.ToList();
+               List<CartModel> cart = _db.Carts.FromSqlRaw("Select * from Carts where UserModel="+Uid).ToList();
+                for (int i = 0; i < qunatityOfBook.Length; i++)
+                {
+                    OrderModel om = new OrderModel();
+                    om.Book = cart[i].Book;
+                    om.Quantity= qunatityOfBook[i];
+                    om.Price = cart[i].Book.Price;
+                    om.User = _db.Users.Find(Uid);
+                    if (UserAddress != null)
+                    {
+                        om.Address = UserAddress;
+                        om.Address = UserAddress;
+                        om.City = UserCity;
+                        om.State = UserState;
+                        om.PostalCode = UserPostalCode;
+                    }
+                    else
+                    {
+                        om.Address = om.User.Address;
+                        om.City = om.User.City;
+                        om.State = om.User.State;
+                        om.PostalCode = om.User.PostalCode;
+                    }
+                    _db.Orders.Add(om);
+                    _db.Carts.Where(a => a.Id == cart[i].Id).ExecuteDelete();
+                    _db.SaveChanges();
+                }
+                _db.SaveChanges();
+            }
+            return View();
+        }
+
 
         [HttpPost]
         public IActionResult Login(string uEmail, string uPassword)
@@ -63,14 +164,21 @@ namespace BulkyBook.Controllers
                 if (u.Password == uPassword)
                 {
                     Uid = u.Id;
+                    TempData["msg"] = "Login Successfull";
                     return RedirectToAction("Index");
                 }
             }
+            TempData["msg"] = "Wrong Username or Password";
+            ViewBag.msg = TempData["msg"].ToString();
             return View();
         }
 
         public IActionResult Login()
         {
+            if (TempData.ContainsKey("msg"))
+            {
+                ViewBag.msg = TempData["msg"].ToString();
+            }
             return View();
         }
 
@@ -112,6 +220,10 @@ namespace BulkyBook.Controllers
 
         public IActionResult Cart()
         {
+            if (Uid == 0)
+            {
+                return RedirectToAction("Login");
+            }
             return View();
         }
         public IActionResult AddCart(int id)
@@ -134,14 +246,26 @@ namespace BulkyBook.Controllers
 
         public IActionResult Buy(int id)
         {
+            if(Uid == 0)
+            {
+                return RedirectToAction("Login");
+            }
             BuyModel d = new BuyModel();
             var h = _db.Books.Find(id);
+            BookIdf = id;
             h.NoOfDownloads++;
             _db.Books.Update(h);
             _db.SaveChanges();
             d.Book = h;
             var g = _db.Books.FromSqlRaw("Select * from books where category={0} and id != {1}", h.Category, id).ToList();
             d.Books = g;
+            List<CartModel> gg=_db.Carts.FromSqlRaw("Select * from carts where UserModel="+Uid).ToList();
+            List<int> ids = new List<int>();
+            foreach(var c in gg)
+            {
+                ids.Add(c.Book.Id);
+            }
+            d.inCart = ids;
             return View(d);
         }
 

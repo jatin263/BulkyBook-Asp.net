@@ -11,15 +11,35 @@
     <table>
         <tr>
             <td>Name:- </td>
-            <td>@Html.TextBoxFor(x=>x.Name)</td>
+            <td>@Html.TextBoxFor(x=>x.Name,new{required=true})</td>
         </tr>
         <tr>
             <td>Email:- </td>
-            <td>@Html.TextBoxFor(x=>x.Email,new{type="email"})</td>
+            <td>@Html.TextBoxFor(x=>x.Email,new{type="email",required=true})</td>
         </tr>
         <tr>
             <td>Password:- </td>
-            <td>@Html.PasswordFor(x=>x.Password)</td>
+            <td>@Html.PasswordFor(x=>x.Password,new{required=true})</td>
+        </tr>
+        <tr>
+            <td>Number:-</td>
+            <td>@Html.TextBoxFor(x=>x.phoneNumber,new{type="number",maxlength="10",required=true})</td>
+        </tr>
+        <tr>
+            <td>Address:-</td>
+            <td>@Html.TextBoxFor(x=>x.Address,new{required=true})</td>
+        </tr>
+        <tr>
+            <td>City:-</td>
+            <td>@Html.TextBoxFor(x=>x.City,new{required=true})</td>
+        </tr>
+        <tr>
+            <td>State:-</td>
+            <td>@Html.TextBoxFor(x=>x.State,new{required=true})</td>
+        </tr>
+        <tr>
+            <td>Postal Code:-</td>
+            <td>@Html.TextBoxFor(x=>x.PostalCode,new{required=true,type="number"})</td>
         </tr>
     </table>
     <input type="submit" value="Register" />

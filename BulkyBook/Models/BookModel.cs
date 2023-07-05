@@ -16,6 +16,9 @@ namespace BulkyBook.Models
         public string Category { get; set; }
         [Required]
         public int NoOfDownloads { get; set; }
+        [Required]
+        public int Price { get; set; } 
+
 
     }
 }

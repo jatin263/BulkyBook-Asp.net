@@ -6,42 +6,41 @@
 @{
     ViewData["Title"] = "Buy";
 }
-
 @if(Model.Book==null){
     <h1>Book was not available</h1>
 }
 else{
-    <h1>@Model.Book.Title</h1>
-    <h2>@Model.Book.Author</h2>
-    <h3>@Model.Book.Category</h3>
+    <div class="BookShow">
+        <h2>@Model.Book.Title</h2>
+        <h3>@Model.Book.Author</h3>
+        <div>
+            @if (Model.inCart.Contains(Model.Book.Id))
+            {
+                <p>Added to Cart</p>
+            }
+            else
+            {
+                @Html.ActionLink("Add to Cart","AddCart","Home",new{id=Model.Book.Id})
+            }
+            @Html.ActionLink("Order Now","OrderNow","Home",new{id=Model.Book.Id})
+        </div>
+    </div>
 }
 
+<h3 style="text-align:center">Recommended Books</h3>
 @{
 
     if(Model.Books.Count>0){
-    int co = 0;
-    <h3 style="text-align:center">Books</h3>
-        <table width="100%">
-        <tr>
-            <td>S.No</td>
-            <td>Title</td>
-            <td>Author</td>
-            <td>Category</td>
-            <td>No of Downloads</td>
-            <td>Buy Now</td>
-        </tr>
+        <div class="container">
         @for(int i = 0; i < Model.Books.Count; i++)
         {
-                <tr>
-                    <td>@co</td>
-                    <td>@Model.Books[i].Title</td>
-                    <td>@Model.Books[i].Author</td>
-                    <td>@Model.Books[i].Category</td>
-                    <td>@Model.Books[i].NoOfDownloads</td>
-                    <td>@Html.ActionLink("Buy","Buy","Home",new {id=Model.Books[i].Id})</td>
-                </tr>
-                co++;
+                <div class="card">
+                    <h2>@Model.Books[i].Title</h2>
+                    <h3>@Model.Books[i].Author</h3>
+                    <h4>@Model.Books[i].Category</h4>
+                    @Html.ActionLink("Buy","Buy","Home",new {id=Model.Books[i].Id})
+                </div>
         }
-        </table>
+        </div>
     }
 }

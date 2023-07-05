@@ -2,3 +2,10 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
+function closeCart() {
+    document.getElementById("Carts").style.display = "none";
+}
+
+function showCart() {
+    document.getElementById("Carts").style.display = "block";
+}

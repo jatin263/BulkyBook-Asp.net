@@ -4,8 +4,13 @@
 @{
     ViewData["Title"] = "Login";
 }
+@if (ViewBag.msg != null)
+{
+    //<script>alert("@ViewBag.msg");</script>
+}
 
 <h1>Login</h1>
+<h3>@ViewBag.msg</h3>
 <form asp-asp-controller="Home" asp-action="Login" method="post">
     <label for="email">Email</label><br />
     <input id="email" type="email" name="uEmail" /><br />

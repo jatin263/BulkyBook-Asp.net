@@ -16,3 +16,61 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.card {
+    width: 150px;
+    padding: 5px;
+    text-align: center;
+    border: 2px solid black;
+    border-radius: 6px;
+    margin: 10px 10px;
+}
+
+.cart-card {
+    display: flex;
+    flex-wrap: wrap;
+    border: 2px solid black;
+    margin: 2px 5px;
+    justify-content: space-around;
+}
+
+.cart {
+    position: absolute;
+    width: 95%;
+    background-color: aliceblue;
+    z-index: 2;
+    display:none;
+}
+
+.card div{
+    margin-top:auto;
+}
+
+.card div button {
+    margin: 5px;
+}
+
+.BookShow {
+    width: 97vw;
+    text-align: center;
+}
+
+.BookShow div {
+    display: flex;
+    justify-content: center;
+    text-align:center;
+}
+
+.BookShow div button {
+    margin: 3px 20px;
+    padding: 10px;
+}
+
+.BookShow div img {
+    height: 360px;
+}
