@@ -31,6 +31,7 @@
                 <h6>@Model.Cart[i].Book.Category</h6>
             </div>
         }
+            @Html.ActionLink("Check-Out","Order","Home",new{@class="link-btn"});
         </div>
     }
     else
@@ -55,17 +56,16 @@
                         <h3>@Model.AllBook[i].Title</h3>
                         <h4>Rs.- @Model.AllBook[i].Price</h4>
                         <h5>@Model.AllBook[i].Author</h5>
-                        <h6>@Model.AllBook[i].Category</h6>
                         <div>
-                        @Html.ActionLink("Buy Now","Buy","Home",new{id=Model.AllBook[i].Id})
+                            @Html.ActionLink("Buy Now","Buy","Home",new{id=Model.AllBook[i].Id},new{@class="link-btn"})
                         @{
                             if (cBook.Contains(Model.AllBook[i].Id))
                             {
-                                    <a href="#">Added To Cart</a>
+                                    <a href="#" class="link-btn">Added To Cart</a>
                             }
                             else
                             {
-                                @Html.ActionLink("Add To Cart","AddCart","Home",new{id=Model.AllBook[i].Id})
+                                    @Html.ActionLink("Add To Cart","AddCart","Home",new{id=Model.AllBook[i].Id},new{@class="link-btn"})
                             }
                         }
                         </div>
@@ -87,15 +87,15 @@
                             <h5>@Model.AllBook[i].Author</h5>
                             <h6>@Model.AllBook[i].Category</h6>
                             <div>
-                            @Html.ActionLink("Buy Now","Buy","Home",new{id=Model.AllBook[i].Id})
+                                @Html.ActionLink("Buy Now","Buy","Home",new{id=Model.AllBook[i].Id},new{@class="link-btn"})
                             @{
                                 if (cBook.Contains(Model.AllBook[i].Id))
                                 {
-                                        <a href="#">Added To Cart</a>
+                                        <a href="#" class="link-btn">Added To Cart</a>
                                 }
                                 else
                                 {
-                                    @Html.ActionLink("Add To Cart","AddCart","Home",new{id=Model.AllBook[i].Id})
+                                        @Html.ActionLink("Add To Cart","AddCart","Home",new{id=Model.AllBook[i].Id},new{@class="link-btn"})
                                 }
                             }
                             </div>

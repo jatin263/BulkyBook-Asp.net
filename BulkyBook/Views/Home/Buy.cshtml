@@ -20,9 +20,9 @@ else{
             }
             else
             {
-                @Html.ActionLink("Add to Cart","AddCart","Home",new{id=Model.Book.Id})
+                @Html.ActionLink("Add to Cart","AddCart","Home",new{id=Model.Book.Id},new{@class="link-btn"})
             }
-            @Html.ActionLink("Order Now","OrderNow","Home",new{id=Model.Book.Id})
+            @Html.ActionLink("Order Now","OrderNow","Home",new{id=Model.Book.Id},new{@class="link-btn"})
         </div>
     </div>
 }
@@ -37,8 +37,7 @@ else{
                 <div class="card">
                     <h2>@Model.Books[i].Title</h2>
                     <h3>@Model.Books[i].Author</h3>
-                    <h4>@Model.Books[i].Category</h4>
-                    @Html.ActionLink("Buy","Buy","Home",new {id=Model.Books[i].Id})
+                    @Html.ActionLink("Buy","Buy","Home",new {id=Model.Books[i].Id},new{@class="link-btn"})
                 </div>
         }
         </div>

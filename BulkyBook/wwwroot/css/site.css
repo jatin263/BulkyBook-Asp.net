@@ -23,7 +23,7 @@ body {
 }
 
 .card {
-    width: 150px;
+    width: 200px;
     padding: 5px;
     text-align: center;
     border: 2px solid black;
@@ -37,6 +37,13 @@ body {
     border: 2px solid black;
     margin: 2px 5px;
     justify-content: space-around;
+}
+
+.link-btn{
+    padding:5px;
+    background-color:black;
+    color:white;
+    text-decoration:none;
 }
 
 .cart {
@@ -73,4 +80,15 @@ body {
 
 .BookShow div img {
     height: 360px;
+}
+
+@media only screen and (min-width: 600px) {
+    .cart {
+        position: absolute;
+        width: 70%;
+        right:0;
+        background-color: aliceblue;
+        z-index: 2;
+        display: none;
+    }
 }
